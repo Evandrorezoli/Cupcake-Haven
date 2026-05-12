@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "cupcake": {
+      "title": "Cupcake Product",
+      "description": "Standard cupcake flavors and designs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "category": { "type": "string" },
+        "stock": { "type": "integer" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["name", "price", "imageUrl"]
+    },
+    "customCupcake": {
+      "title": "Customized Cupcake",
+      "description": "A cupcake customized by a user",
+      "type": "object",
+      "properties": {
+        "baseFlavor": { "type": "string" },
+        "frosting": { "type": "string" },
+        "topping": { "type": "string" },
+        "quantity": { "type": "integer" },
+        "price": { "type": "number" }
+      }
+    },
+    "address": {
+      "title": "User Address",
+      "description": "Shipping address for a user",
+      "type": "object",
+      "properties": {
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "zipCode": { "type": "string" },
+        "isDefault": { "type": "boolean" }
+      },
+      "required": ["street", "number", "neighborhood", "city", "state", "zipCode"]
+    },
+    "order": {
+      "title": "Customer Order",
+      "description": "Order details and status",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "address": { "type": "object" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"] },
+        "deliveryDate": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "items", "total", "status", "address"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "user",
+      "description": "User profile data"
+    },
+    "products": {
+      "schema": "cupcake",
+      "description": "Available cupcakes"
+    },
+    "orders": {
+      "schema": "order",
+      "description": "Customer orders"
+    },
+    "favorites/{userId}/items": {
+      "schema": "cupcake",
+      "description": "User favorite cupcakes"
+    },
+    "users/{userId}/addresses": {
+      "schema": "address",
+      "description": "User shipping addresses"
+    }
+  }
+}
