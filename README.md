@@ -141,8 +141,8 @@ cupcake-haven/
 
 1. **Clonar o Repositório:**
    ```bash
-   git clone https://github.com/Evandrorezoli/Evandro-Rezende.git
-   cd Evandro-Rezende
+   git clone https://github.com/Evandrorezoli/Cupcake-Haven.git
+   cd Cupcake-Haven
    ```
 
 2. **Instalar as Dependências:**
@@ -190,7 +190,7 @@ O banco de dados Firestore conta com controle de acesso refinado para garantir q
 Desenvolvido por **Evandro Rezende de Oliveira**
 
 - **GitHub**: [https://github.com/Evandrorezoli](https://github.com/Evandrorezoli)
-- **Repositório do Projeto**: [https://github.com/Evandrorezoli/Evandro-Rezende.git](https://github.com/Evandrorezoli/Evandro-Rezende.git)
+- **Repositório do Projeto**: [https://github.com/Evandrorezoli/Cupcake-Haven.git](https://github.com/Evandrorezoli/Cupcake-Haven.git)
 - **E-mail de Contato**: `evandrorezoli@gmail.com`
 
 ---
