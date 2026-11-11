@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { FLAVORS, FROSTINGS, TOPPINGS } from '../constants';
 import { useCart } from '../lib/CartContext';
+import { useAuth } from '../lib/AuthContext';
+import { collection, addDoc } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { motion } from 'motion/react';
-import { Check, Star } from 'lucide-react';
+import { Check, Star, Heart } from 'lucide-react';
 
 export default function Customizer() {
   const { addItem } = useCart();
+  const { user, login } = useAuth();
+  const [savingFav, setSavingFav] = useState(false);
   const [selections, setSelections] = useState({
     baseFlavor: FLAVORS[0],
     frosting: FROSTINGS[0],
@@ -22,7 +27,7 @@ export default function Customizer() {
       name: `Cupcake Personalizado (${selections.baseFlavor.name})`,
       price: basePrice,
       quantity: selections.quantity,
-      imageUrl: 'https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&q=80&w=400',
+      imageUrl: '/red_velvet.jpg',
       isCustom: true,
       details: {
         baseFlavor: selections.baseFlavor.name,
@@ -31,6 +36,36 @@ export default function Customizer() {
       }
     });
     alert('Cupcake personalizado adicionado ao carrinho!');
+  };
+
+  const handleSaveFavorite = async () => {
+    if (!user) {
+      const proceed = window.confirm('Você precisa estar logado para salvar nos favoritos. Deseja entrar agora?');
+      if (proceed) {
+        await login();
+      }
+      return;
+    }
+
+    setSavingFav(true);
+    try {
+      await addDoc(collection(db, 'favorite_customizations'), {
+        userId: user.uid,
+        name: `${selections.baseFlavor.name} com ${selections.frosting.name}`,
+        details: {
+          baseFlavor: selections.baseFlavor.name,
+          frosting: selections.frosting.name,
+          topping: selections.topping.name
+        },
+        imageUrl: '/red_velvet.jpg',
+        createdAt: new Date().toISOString()
+      });
+      alert('Cupcake personalizado salvo nos seus favoritos com sucesso! ✨');
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'favorite_customizations');
+    } finally {
+      setSavingFav(false);
+    }
   };
 
   return (
@@ -154,17 +189,28 @@ export default function Customizer() {
             </div>
           </section>
 
-          <div className="pt-8 border-t border-gray-100 flex items-center justify-between">
+          <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="text-sm text-gray-400 mb-1 italic">Total previsto</p>
               <p className="text-4xl font-serif font-bold text-primary">R$ {totalPrice.toFixed(2)}</p>
             </div>
-            <button 
-              onClick={handleAddToCart}
-              className="px-12 py-5 bg-gray-900 text-white rounded-2xl font-bold hover:bg-black transition-all transform active:scale-95"
-            >
-              Adicionar ao Carrinho
-            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <button 
+                type="button"
+                onClick={handleSaveFavorite}
+                disabled={savingFav}
+                title="Salvar nos Favoritos"
+                className="p-5 border-2 border-red-200 text-red-500 rounded-2xl hover:bg-red-50 transition-all flex items-center justify-center disabled:opacity-50"
+              >
+                <Heart className="w-5 h-5 fill-current" />
+              </button>
+              <button 
+                onClick={handleAddToCart}
+                className="flex-1 sm:flex-none px-10 py-5 bg-gray-900 text-white rounded-2xl font-bold hover:bg-black transition-all transform active:scale-95 shadow-lg shadow-gray-900/10"
+              >
+                Adicionar ao Carrinho
+              </button>
+            </div>
           </div>
         </div>
       </div>

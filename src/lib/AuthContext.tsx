@@ -64,12 +64,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      await signInWithPopup(auth, provider);
+    } catch (error: any) {
+      console.error('Firebase Auth Login Error:', error);
+      if (error?.code === 'auth/unauthorized-domain') {
+        alert(
+          'Domínio não autorizado pelo Firebase!\n\n' +
+          'Para logar rodando localmente (localhost), acesse o Firebase Console > Authentication > Configurações > Domínios Autorizados e adicione "localhost" e "127.0.0.1".\n\n' +
+          'Certifique-se também de acessar via http://localhost:3000 no navegador.'
+        );
+      } else if (error?.code === 'auth/popup-blocked') {
+        alert('A janela pop-up de login foi bloqueada pelo navegador. Por favor, permita pop-ups para este site.');
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        console.warn('Login pop-up fechado pelo usuário.');
+      } else {
+        alert(`Erro ao fazer login com o Google: ${error?.message || error}`);
+      }
+    }
   };
 
   const logout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (

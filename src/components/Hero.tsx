@@ -13,7 +13,16 @@ export default function Hero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <img src="/logo.png" alt="Cupcake Haven Logo" className="w-24 h-24 mb-8 object-contain" />
+          <div className="w-20 h-20 mb-8 rounded-3xl overflow-hidden shadow-lg shadow-primary/10 border border-gray-100 bg-white p-2 flex items-center justify-center">
+            <img 
+              src="/logo.png" 
+              alt="Cupcake Haven" 
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }} 
+            />
+          </div>
           <span className="meta-label text-accent mb-4 block font-medium tracking-widest uppercase text-xs">Cupcakes Artesanais</span>
           <h1 className="text-6xl md:text-8xl font-serif font-bold text-gray-900 leading-[0.9] mb-6">
             Pequenos <br />

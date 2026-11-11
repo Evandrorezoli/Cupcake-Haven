@@ -72,6 +72,46 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "items", "total", "status", "address"]
+    },
+    "favorite_customization": {
+      "title": "Favorite Customization",
+      "description": "A saved customized cupcake configuration",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "details": { "type": "object" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "details", "imageUrl"]
+    },
+    "review": {
+      "title": "Customer Review",
+      "description": "Product or service reviews from customers",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userName", "rating", "comment"]
+    },
+    "notice": {
+      "title": "Announcement/Notice",
+      "description": "General announcements or notices for all users",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "type": { "type": "string", "enum": ["info", "success", "warning", "error"] },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "type", "active"]
     }
   },
   "firestore": {
@@ -90,6 +130,18 @@
     "favorites/{userId}/items": {
       "schema": "cupcake",
       "description": "User favorite cupcakes"
+    },
+    "favorite_customizations": {
+      "schema": "favorite_customization",
+      "description": "User saved custom cupcakes"
+    },
+    "reviews": {
+      "schema": "review",
+      "description": "Customer feedback and ratings"
+    },
+    "notices": {
+      "schema": "notice",
+      "description": "Store announcements and banners"
     },
     "users/{userId}/addresses": {
       "schema": "address",

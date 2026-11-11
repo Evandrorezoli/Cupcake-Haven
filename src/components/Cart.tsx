@@ -19,7 +19,7 @@ export default function Cart() {
 
     const q = query(collection(db, 'users', user.uid, 'addresses'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const addrData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const addrData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as any[];
       setAddresses(addrData);
       
       // Select default address if none selected
@@ -109,10 +109,14 @@ export default function Cart() {
           {items.map((item) => (
             <div key={item.id} className="flex gap-6 p-6 bg-white rounded-[40px] shadow-sm border border-gray-100">
               <img 
-                src={item.imageUrl} 
-                className="w-32 h-40 rounded-3xl object-cover" 
+                src={item.imageUrl?.includes('1614707267537') ? '/red_velvet.jpg' : (item.imageUrl || '/red_velvet.jpg')} 
+                className="w-32 h-40 rounded-3xl object-cover bg-gray-50" 
                 alt={item.name}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/red_velvet.jpg';
+                }}
               />
               <div className="flex-1 flex flex-col justify-between py-2">
                 <div className="flex justify-between items-start">

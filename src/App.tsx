@@ -15,6 +15,8 @@ import Cart from './components/Cart';
 import OrderHistory from './components/OrderHistory';
 import Profile from './components/Profile';
 import Addresses from './components/Addresses';
+import Favorites from './components/Favorites';
+import ReviewsAndNotices from './components/ReviewsAndNotices';
 
 function HomePage() {
   return (
@@ -42,6 +44,8 @@ export default function App() {
                 <Route path="/orders" element={<OrderHistory />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/addresses" element={<Addresses />} />
+                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/reviews" element={<ReviewsAndNotices />} />
               </Routes>
             </main>
             

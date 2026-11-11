@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Heart } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
 import { useCart } from '../lib/CartContext';
 import { useState } from 'react';
@@ -17,7 +17,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="flex items-center space-x-3">
-            <img src="/logo.png" alt="Cupcake Haven Logo" className="w-10 h-10 object-contain" />
+            <img 
+              src="/logo.png" 
+              alt="Cupcake Haven" 
+              className="w-9 h-9 object-contain rounded-xl shadow-xs" 
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
             <span className="text-2xl font-serif font-bold text-primary">Cupcake Haven</span>
           </Link>
 
@@ -25,6 +30,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/catalog" className="text-sm font-medium hover:text-primary transition-colors">Catálogo</Link>
             <Link to="/customize" className="text-sm font-medium hover:text-primary transition-colors">Personalizar</Link>
+            <Link to="/reviews" className="text-sm font-medium hover:text-primary transition-colors">Avaliações</Link>
+            <Link to="/favorites" className="text-sm font-medium hover:text-primary transition-colors flex items-center space-x-1.5">
+              <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+              <span>Favoritos</span>
+            </Link>
             {(profile?.role === 'admin' || user?.email === 'evandrorezoli@gmail.com') && (
               <Link to="/admin" className="px-3 py-1.5 bg-accent/10 border border-accent/20 rounded-lg text-xs font-bold text-accent uppercase tracking-widest hover:bg-accent hover:text-white transition-all">
                 Painel Admin
@@ -95,6 +105,8 @@ export default function Navbar() {
             <div className="px-4 pt-2 pb-6 space-y-4">
               <Link to="/catalog" onClick={() => setIsOpen(false)} className="block text-lg font-serif">Catálogo</Link>
               <Link to="/customize" onClick={() => setIsOpen(false)} className="block text-lg font-serif">Personalizar</Link>
+              <Link to="/reviews" onClick={() => setIsOpen(false)} className="block text-lg font-serif">Avaliações & Avisos</Link>
+              <Link to="/favorites" onClick={() => setIsOpen(false)} className="block text-lg font-serif text-red-500">Meus Favoritos</Link>
               {(profile?.role === 'admin' || user?.email === 'evandrorezoli@gmail.com') && (
                 <Link to="/admin" onClick={() => setIsOpen(false)} className="block p-4 bg-accent/5 border border-accent/10 rounded-2xl text-lg font-serif text-accent flex items-center justify-between">
                   <span>Painel Admin</span>

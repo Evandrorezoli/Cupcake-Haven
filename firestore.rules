@@ -15,7 +15,11 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn() && (
+        request.auth.token.email == 'evandrorezoli@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
     function isValidId(id) {
@@ -82,8 +86,15 @@ service cloud.firestore {
 
     // --- Favorites ---
     match /favorites/{userId}/items/{itemId} {
-      allow read: if isOwner(userId);
-      allow write: if isOwner(userId) && isValidId(itemId);
+      allow read, write: if isOwner(userId);
+    }
+
+    // --- Favorite Customizations ---
+    match /favorite_customizations/{id} {
+      allow read: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
     // --- Addresses ---
@@ -101,6 +112,34 @@ service cloud.firestore {
       allow create: if isOwner(userId) && isValidId(addressId) && isValidAddress(incoming());
       allow update: if isOwner(userId) && isValidAddress(incoming());
       allow delete: if isOwner(userId);
+    }
+
+    // --- Reviews ---
+    function isValidReview(data) {
+      return data.userId == request.auth.uid &&
+             data.userName is string && data.userName.size() <= 150 &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.comment is string && data.comment.size() <= 1000;
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidReview(incoming());
+      allow update: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin()) && isValidReview(incoming());
+      allow delete: if isSignedIn() && (!('userId' in resource.data) || resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // --- Notices ---
+    function isValidNotice(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 2000 &&
+             data.type in ['info', 'success', 'warning', 'error'] &&
+             data.active is bool;
+    }
+
+    match /notices/{noticeId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidNotice(incoming());
     }
   }
 }
